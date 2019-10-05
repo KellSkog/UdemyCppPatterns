@@ -17,14 +17,25 @@ struct Journal
         entries.push_back(std::to_string(count++) + " " + entry);
     }
     //Do the wrong thing, add additional concern: persistance
+    //This results in having to maintain persistence individually for each class with persistance
     void save(const std::string &filename)
     {
         std::ofstream ofs{filename, std::ofstream::out};
         for (auto &item : entries)
-            ofs << item;
+            ofs << item << std::endl;
         ofs.close();
     }
 };
+//Implementing the behavior of persistant storage as a free function retains Single Responsibility of Journal
+template <typename T>
+void save(T t, const std::string &filename)
+{
+    std::ofstream ofs{filename, std::ofstream::out};
+    for (auto &item : t.entries)
+        ofs << item << std::endl;
+    ofs.close();
+}
+
 int main()
 {
     // getchar();
@@ -34,5 +45,6 @@ int main()
     for (std::string &str : myJournal.entries)
         std::cout << str << std::endl;
     myJournal.save("SavedJournal");
+    save(myJournal, "SavedBetter");
     return 0;
 }
