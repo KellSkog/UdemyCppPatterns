@@ -35,10 +35,8 @@ void save(T t, const std::string &filename)
         ofs << item << std::endl;
     ofs.close();
 }
-
-int main()
+void doJournal()
 {
-    // getchar();
     Journal myJournal{"Kells"};
     myJournal.add("Did something");
     myJournal.add("Did something else");
@@ -46,5 +44,89 @@ int main()
         std::cout << str << std::endl;
     myJournal.save("SavedJournal");
     save(myJournal, "SavedBetter");
+}
+
+struct Product //I hate this format but don't know how to change it :-c
+{
+    enum Color
+    {
+        Red,
+        Yellow,
+        Green
+    };
+    enum Size
+    {
+        Small,
+        Medium,
+        Large
+    };
+    std::string name;
+    Color color;
+    Size size;
+};
+/**
+ * This filter works fine but violates the open-closed principle in that to add a new filter criteria
+ * ProductFilter has to be changed, thus not closed for modification.
+ * It would be better if it could be extended insted of changed!
+ * A solution can be to use the Specification pattern: https://martinfowler.com/apsupp/spec.pdf
+ */
+struct ProductFilter
+{
+    std::vector<Product *> by_color(std::vector<Product *> items, Product::Color col)
+    {
+        std::vector<Product *> result;
+        for (auto &item : items)
+        {
+            if (item->color == col)
+                result.push_back(item);
+        }
+        return result;
+    }
+};
+/**
+ * The Specialization approach, use a predicate which returns true if the filter criteria is satisfied
+ */
+template <typename T>
+struct Specification
+{
+    virtual bool isSatisfied(T *item) = 0; //=0 makes it abstract, to be abstract it has to be virtual, it is an interface!
+};
+template <typename T>
+struct Filter
+{
+    virtual std::vector<T *> filter(std::vector<T *> items, Specification<T> &spec) = 0;
+};
+struct BetterFilter : Filter<Product> {
+    std::vector<Product *> filter(std::vector<Product*> items, Specification<Product> &spec) override {
+        std::vector<Product*> result;
+        for(auto &item : items) {
+            if(spec.isSatisfied(item))
+                result.push_back(item);
+        }
+        return result;
+    }
+};
+
+void testProduct() {
+    Product apple{"Apple", Product::Red, Product::Small};
+    Product orange{"Orange", Product::Yellow, Product::Medium};
+    Product mellon{"Mellon", Product::Green, Product::Small};
+    std::vector<Product *> products{&apple, &orange, &mellon};
+    ProductFilter pf;
+    std::vector<Product *> yellows = ProductFilter{}.by_color(products, Product::Yellow);
+    for (auto &yellow : yellows)
+        std::cout << yellow->name << std::endl;
+}
+void testFilter() {
+    Product apple{"Apple", Product::Red, Product::Small};
+    Product orange{"Orange", Product::Yellow, Product::Medium};
+    Product mellon{"Mellon", Product::Green, Product::Small};
+    Specification redSmall<>{Product::Red, Product::Small};
+}
+int main()
+{
+    // getchar();
+    //doJournal();
+    //testProduct();
     return 0;
 }
