@@ -121,12 +121,14 @@ void testFilter() {
     Product apple{"Apple", Product::Red, Product::Small};
     Product orange{"Orange", Product::Yellow, Product::Medium};
     Product mellon{"Mellon", Product::Green, Product::Small};
-    Specification redSmall<>{Product::Red, Product::Small};
+    //Specification redSmall<>{Product::Red, Product::Small};
 }
 int main()
 {
     // getchar();
     //doJournal();
     //testProduct();
+    using namespace std;
+    cout << "Hello world" << endl;
     return 0;
 }
