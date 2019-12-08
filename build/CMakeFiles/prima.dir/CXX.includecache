@@ -1,0 +1,20 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/c/Users/Kell Skog/Repositories/UdemyCppPatterns/src/main.cc
+iostream
+-
+stdio.h
+-
+string
+-
+vector
+-
+fstream
+-
+

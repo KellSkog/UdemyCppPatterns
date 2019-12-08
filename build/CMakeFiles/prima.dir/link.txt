@@ -1,0 +1,1 @@
+/usr/bin/c++     CMakeFiles/prima.dir/src/main.cc.o  -o prima 
